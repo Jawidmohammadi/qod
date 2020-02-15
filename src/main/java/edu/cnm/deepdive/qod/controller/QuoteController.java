@@ -45,7 +45,6 @@ public class QuoteController {
     return ResponseEntity.created(location).body(quote);
   }
 
-
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public Iterable<Quote> get() {
     return quoteRepository.getAllByOrderByCreatedDesc();
@@ -58,7 +57,7 @@ public class QuoteController {
 
   @PutMapping(value = "{id}",
       consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public Quote put(@PathVariable UUID id,@RequestBody Quote modifiedQuote){
+  public Quote put(@PathVariable UUID id, @RequestBody Quote modifiedQuote) {
     Quote quote = get(id);
     quote.setText(modifiedQuote.getText());
     return quoteRepository.save(quote);
@@ -75,20 +74,18 @@ public class QuoteController {
 
   @DeleteMapping(value = "{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void delete(@PathVariable UUID id){
-    // Code below throws NoSuchElementException if did is not in database.
+  public void delete(@PathVariable UUID id) {
+    // Code below throws NoSuchElementException if id is not in database.
 //    Quote quote = get(id);
-//    quoteRepository.delete(quote);  //get error 404 that there is not such thing
-
+//    quoteRepository.delete(quote);
     quoteRepository.findById(id).ifPresent(quoteRepository::delete);
   }
-
 
   @PutMapping(value = "{quoteId}/sources/{sourceId}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Quote attach(@PathVariable UUID quoteId, @PathVariable UUID sourceId) {
     Quote quote = get(quoteId);
     Source source = sourceRepository.findById(sourceId).get();
-    if (quote.getSources().add(source)){
+    if (quote.getSources().add(source)) {
       quoteRepository.save(quote);
     }
     return quote;
@@ -99,7 +96,7 @@ public class QuoteController {
   public void detach(@PathVariable UUID quoteId, @PathVariable UUID sourceId) {
     Quote quote = get(quoteId);
     Source source = sourceRepository.findById(sourceId).get();
-    if (quote.getSources().remove(source)){
+    if (quote.getSources().remove(source)) {
       quoteRepository.save(quote);
     }
   }
