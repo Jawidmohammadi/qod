@@ -1,5 +1,6 @@
-package edu.cnm.deepdive.qod.controller;
+package edu.cnm.deepdive.qod.controller.rest;
 
+import edu.cnm.deepdive.qod.controller.SearchTermTooShortException;
 import edu.cnm.deepdive.qod.model.entity.Quote;
 import edu.cnm.deepdive.qod.model.entity.Source;
 import edu.cnm.deepdive.qod.service.QuoteRepository;
@@ -45,6 +46,7 @@ public class QuoteController {
     return ResponseEntity.created(quote.getHref()).body(quote);
   }
 
+
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public Iterable<Quote> get() {
     return quoteRepository.getAllByOrderByCreatedDesc();
@@ -56,6 +58,16 @@ public class QuoteController {
       throw new SearchTermTooShortException();
     }
     return quoteRepository.getAllByTextContainsOrderByTextAsc(fragment);
+  }
+
+  @GetMapping(value = "/random", produces = MediaType.APPLICATION_JSON_VALUE)
+  public Quote getRandom(){
+    return quoteRepository.getRandom().get();
+  }
+
+  @GetMapping(value = "/random", produces = MediaType.TEXT_PLAIN_VALUE)
+  public String getRandomPlain(){
+    return getRandom().getText();
   }
 
   @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
